@@ -6,26 +6,20 @@ import * as BooksAPI from "../BooksAPI";
 function BookShelf(props) {
   const { shelftitle, shelfName } = props;
   const [Books, setBooks] = useState([]);
-  useEffect(() => {
-    BooksAPI.getAll().then((val) =>
-      setBooks(val.filter((e) => e.shelf === shelfName))
-    );
-  }, []);
+
   useEffect(
     () => {
-      BooksAPI.getAll().then((val) =>
-        setBooks(val.filter((e) => e.shelf === shelfName))
-      );
+      BooksAPI.getAll().then((val) => setBooks(val));
     },
     [Books]
   );
-
+  // console.log("books on shelf", Books.filter((e) => e.shelf === shelfName));
   return (
     <div className="bookshelf">
       <h2 className="bookshelf-title">{shelftitle}</h2>
       <div className="bookshelf-books">
         <ol className="books-grid">
-          {Books.map((book) => (
+          {Books.filter((e) => e.shelf === shelfName).map((book) => (
             <Book book={book} key={book.id} />
           ))}
         </ol>
