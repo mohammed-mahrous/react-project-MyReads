@@ -13,7 +13,7 @@ function BookShelf(props) {
     },
     [Books]
   );
-  // console.log("books on shelf", Books.filter((e) => e.shelf === shelfName));
+
   return (
     <div className="bookshelf">
       <h2 className="bookshelf-title">{shelftitle}</h2>

@@ -3,24 +3,75 @@ import "../App.css";
 import * as BooksAPI from "../BooksAPI";
 
 function Book(props) {
-  const updatebook = (book, shelf) => {
-    BooksAPI.update(book, shelf).then((value) => {
-      SetShelf(shelf);
-    });
+  const handlechange = (e) => {
+    console.log(document.getElementById("select").value);
+    if (e.target.value === "currentlyReading") {
+      console.log(
+        "title",
+        Book.title,
+        "shelf",
+        Book.shelf,
+        "targeted shelf",
+        e.target.value
+      );
+      BooksAPI.update(Book, "currentlyReading").then(() => {
+        BooksAPI.get(book.id).then((val) => {
+          SetBook(val);
+        });
+      });
+    }
+    if (e.target.value === "wantToRead") {
+      console.log(
+        "title",
+        Book.title,
+        "shelf",
+        Book.shelf,
+        "targeted shelf",
+        e.target.value
+      );
+      BooksAPI.update(Book, "wantToRead").then(() => {
+        BooksAPI.get(book.id).then((val) => {
+          SetBook(val);
+        });
+      });
+    }
+    if (e.target.value === "read") {
+      console.log(
+        "title",
+        Book.title,
+        "shelf",
+        Book.shelf,
+        "targeted shelf",
+        e.target.value
+      );
+      BooksAPI.update(Book, "read").then(() => {
+        BooksAPI.get(book.id).then((val) => {
+          SetBook(val);
+        });
+      });
+    }
   };
-
   const { book } = props;
-  // console.log(bookshelf(book));
 
   const [Book, SetBook] = useState(book);
-  const [Shelf, SetShelf] = useState(Book.shelf);
-
+  const [currentlyReading, Setcurrent] = useState();
+  const [wantToRead, Setwant] = useState();
+  const [read, Setread] = useState();
   useEffect(() => {
     BooksAPI.get(book.id).then((val) => {
-      SetShelf(val.shelf);
       SetBook(val);
     });
   }, []);
+
+  useEffect(
+    () => {
+      Setcurrent(Book.shelf === "currentlyReading");
+      Setwant(Book.shelf === "wantToRead");
+      Setread(Book.shelf === "read");
+    },
+    [Book]
+  );
+
   return (
     <li>
       <div className="book">
@@ -31,53 +82,50 @@ function Book(props) {
               width: 128,
               height: 193,
               backgroundImage: `url(${
-                book.imageLinks.thumbnail
-                  ? book.imageLinks.thumbnail
+                Book.imageLinks
+                  ? Book.imageLinks.thumbnail
                   : "http://i.imgur.com/sJ3CT4V.gif"
               })`,
             }}
           />
           <div className="book-shelf-changer">
-            <select>
+            <select
+              onChange={handlechange}
+              id="select"
+              value={
+                currentlyReading
+                  ? "currentlyReading"
+                  : wantToRead
+                  ? "wantToRead"
+                  : read
+                  ? "read"
+                  : "none"
+              }
+            >
               <option value="move" disabled>
                 Move to...
               </option>
-              <option
-                value={Shelf === "currentlyReading"}
-                onClick={() => {
-                  updatebook(book, "currentlyReading");
-                }}
-              >
-                {Shelf === "currentlyReading" && String.fromCharCode(10003)}
+              <option selected={currentlyReading} value="currentlyReading">
+                {currentlyReading && String.fromCharCode(10003)}
                 Currently Reading
               </option>
-              <option
-                value={Shelf === "wantToRead"}
-                onClick={() => {
-                  updatebook(book, "wantToRead");
-                }}
-              >
-                {Shelf === "wantToRead" && String.fromCharCode(10003)}
+              <option selected={wantToRead} value="wantToRead">
+                {wantToRead && String.fromCharCode(10003)}
                 Want to Read
               </option>
-              <option
-                value={Shelf === "read"}
-                onClick={() => {
-                  updatebook(book, "read");
-                }}
-              >
-                {Shelf === "read" && String.fromCharCode(10003)}
+              <option selected={read} value="read">
+                {read && String.fromCharCode(10003)}
                 Read
               </option>
               <option value="none">None</option>
             </select>
           </div>
         </div>
-        <div className="book-title">{book.title}</div>
+        <div className="book-title">{Book.title}</div>
         <div className="book-authors">
-          {book.authors
-            ? book.authors.map((element) => {
-                return element === book.authors[book.authors.length - 1]
+          {Book.authors
+            ? Book.authors.map((element) => {
+                return element === Book.authors[Book.authors.length - 1]
                   ? `${element}`
                   : `${element}, `;
               })

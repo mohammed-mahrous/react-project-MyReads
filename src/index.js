@@ -5,9 +5,10 @@ import App from "./App";
 import "./index.css";
 
 const container = document.getElementById("root");
-const root = ReactDOM.createRoot(container);
-root.render(
+// const root = ReactDOM.createRoot(container);
+ReactDOM.render(
   <BrowserRouter>
     <App />
-  </BrowserRouter>
+  </BrowserRouter>,
+  container
 );
